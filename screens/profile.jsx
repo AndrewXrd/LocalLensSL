@@ -1,11 +1,11 @@
-import {React, useState, useEffect} from 'react'
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { React, useState, useEffect } from 'react'
+import { View, Text, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
-import {app} from '../firebase';
+import { app } from '../firebase';
 
-const profile = ({navigation}) => {
+const profile = ({ navigation }) => {
 
   const [userData, setUserData] = useState({ username: 'Loading...', email: 'Loading...' });
 
@@ -29,7 +29,8 @@ const profile = ({navigation}) => {
           }
         } catch (error) {
           Alert.alert('Error', 'Failed to fetch user data: ' + error.message);
-        }} else {
+        }
+      } else {
         // Redirect to login if not authenticated (optional for MVP)
         navigation.navigate('UserLogin');
       }
@@ -41,26 +42,26 @@ const profile = ({navigation}) => {
 
   return (
     <View style={styles.container}>
-      <StatusBar style='auto'/>
-        
-      <Image source={require('../assets/header.jpg')} style={styles.header}/>
+      <StatusBar style='auto' />
 
-      <Image source={require('../assets/logo.png')} style={styles.profilePic}/>
-      
-      <Text style={{fontSize:40, fontWeight:'bold', alignItems:'center', justifyContent:'center'}}>{userData.username}</Text>
-      <Text style={{fontSize:15, color:'gray', alignItems:'center', justifyContent:'center'}}>{userData.email}</Text>
+      <Image source={require('../assets/header.jpg')} style={styles.header} />
+
+      <Image source={require('../assets/logo.png')} style={styles.profilePic} />
+
+      <Text style={{ fontSize: 40, fontWeight: 'bold', alignItems: 'center', justifyContent: 'center' }}>{userData.username}</Text>
+      <Text style={{ fontSize: 15, color: 'gray', alignItems: 'center', justifyContent: 'center' }}>{userData.email}</Text>
 
       <TouchableOpacity style={styles.textEditProfile} onPress={() => navigation.navigate('EditProfile')}>
-        <Text style={{marginHorizontal:20, marginBottom:2}}>📝</Text>
-        <Text style={{color:'gray'}}>Edit Profile</Text>
+        <Text style={{ marginHorizontal: 20, marginBottom: 2 }}>📝</Text>
+        <Text style={{ color: 'gray' }}>Edit Profile</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.textWishlist}>
-        <Text style={{marginBottom:1, marginHorizontal:13}}>❤️</Text>
-        <Text style={{color:'gray'}}>Wishlist</Text>
+      <TouchableOpacity style={styles.textWishlist} onPress={() => navigation.navigate('UserSignup')}>
+        <Text style={{ marginBottom: 1, marginHorizontal: 13 }}>       📝</Text>
+        <Text style={{ color: 'gray' }}>Create Profile</Text>
       </TouchableOpacity>
-      
-    
+
+
     </View>
   )
 }
@@ -77,7 +78,7 @@ export const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
 
-  header:{
+  header: {
     shadowColor: 'black',
     shadowOffset: { width: 1, height: 2 },
     shadowRadius: 2,
@@ -86,29 +87,29 @@ export const styles = StyleSheet.create({
   },
 
   profilePic: {
-  marginTop: 50,
-  marginBottom : 20,
-  width: 200,
-  height: 200,
-  borderRadius: 100,
-  borderWidth: 4,
-  borderColor: '#FFA500',
-  resizeMode: 'cover', 
-},
+    marginTop: 50,
+    marginBottom: 20,
+    width: 200,
+    height: 200,
+    borderRadius: 100,
+    borderWidth: 4,
+    borderColor: '#FFA500',
+    resizeMode: 'cover',
+  },
 
-  textEditProfile:{
+  textEditProfile: {
     fontSize: 11,
     position: 'absolute',
     left: 8,
-    bottom:235
+    bottom: 235
   },
 
-  textWishlist:{
-    
+  textWishlist: {
+
     fontSize: 11,
     position: 'absolute',
     right: 8,
-    bottom:235
+    bottom: 235
   }
 
 

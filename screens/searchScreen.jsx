@@ -1,48 +1,100 @@
-import React from 'react';
-import { View, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import React, { useState } from 'react';
+import { LinearGradient } from 'expo-linear-gradient';
+import { View, TextInput, Button, FlatList, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { db } from '../firebase';
+import { collection, query, where, getDocs } from 'firebase/firestore';
 
-const screen = () => {
-  return (<View style={styles.container}>
-      <View style={styles.searchContainer}>
-        <Ionicons 
-          name="search" 
-          size={20} 
-          color="#FF9500" 
-          style={styles.searchIcon}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Search"
-          placeholderTextColor="gray"
-        />
-      </View>
+const SearchScreen = ({ navigation }) => {
+  const [searchText, setSearchText] = useState('');
+  const [hosts, setHosts] = useState([]);
+
+  const searchHosts = async () => {
+    if (searchText.trim() === '') {
+      setHosts([]);
+      return;
+    }
+
+    const hostsRef = collection(db, 'hosts');
+    const q = query(
+      hostsRef,
+      where('experienceName', '>=', searchText),
+      where('experienceName', '<=', searchText + '\uf8ff')
+    );
+
+    try {
+      const querySnapshot = await getDocs(q);
+      const hostsData = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setHosts(hostsData);
+    } catch (error) {
+      console.error('Error searching hosts:', error);
+    }
+  };
+
+  return (
+    <View style={styles.container}>
+      <TextInput
+        style={styles.input}
+        placeholder="Enter experience name"
+        value={searchText}
+        onChangeText={setSearchText}
+      />
+      <TouchableOpacity title="Search" style={styles.button} onPress={searchHosts} >
+        <LinearGradient
+          style={styles.button}
+          colors={['#FF6B6B', '#FFD166']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}>
+          <Text style={styles.text}>Search</Text>
+        </LinearGradient>
+      </TouchableOpacity>
+      <FlatList
+        data={hosts}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <TouchableOpacity onPress={() => navigation.navigate('HostDetail', { host: item })}>
+            <View style={styles.hostContainer}>
+              <Text style={styles.hostName}>{item.name}</Text>
+              <Text>{item.experienceName}</Text>
+            </View>
+          </TouchableOpacity>
+        )}
+      />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    padding: 16,
-  },
-  searchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderWidth: 2,
-    borderColor: '#FF9500',
-    borderRadius: 25, // This creates rounded edges
-    paddingLeft: 16,
-    paddingVertical:0,
-    height: 50,
-  },
-  searchIcon: {
-    marginRight: 12,
+    flex: 1,
+    padding: 20,
   },
   input: {
-    flex: 1,
-    fontSize: 16,
-    color: '#000',
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    marginBottom: 10,
+    borderRadius: 25,
+    paddingHorizontal: 10,
   },
+  hostContainer: {
+    padding: 10,
+    borderBottomColor: 'lightgray',
+    borderBottomWidth: 1,
+  },
+  hostName: {
+    fontWeight: 'bold',
+  },
+  button: {
+    height: 'auto',
+    width: '100%',
+    padding: 5,
+    borderRadius: 25,
+    alignItems: 'center',
+    justifyContent: 'center',
+  }
 });
 
-export default screen
+export default SearchScreen

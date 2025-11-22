@@ -86,15 +86,15 @@ const editProfile = ({navigation}) => {
         <View>
         <Text style={styles.textTitle}>Edit Profile</Text>
         </View>
-        <TextInput label="Name" style={styles.inputBox} />
-        <TextInput label="Username" style={styles.inputBox} />
-        <TextInput label="Email" style={styles.inputBox} />
-        <TextInput label="New Password" style={styles.inputBox} />
-        <TextInput label="Confirm Password" style={styles.inputBox} />
+        <TextInput label="Name" style={styles.inputBox} value={name} onChangeText={setName} />
+        <TextInput label="Username" style={styles.inputBox} value={username} onChangeText={setUsername} />
+        <TextInput label="Email" style={styles.inputBox} value={email} onChangeText={setEmail} />
+        <TextInput label="New Password" style={styles.inputBox} value={newPassword} onChangeText={setNewPassword} secureTextEntry />
+        <TextInput label="Confirm Password" style={styles.inputBox} value={confirmPassword} onChangeText={setConfirmPassword} secureTextEntry />
         
         
         <View>
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.button} onPress={handleUpdate}>
             <LinearGradient
             colors={['#FF8C00', '#FFA500', '#FFD700']}
             start={{ x: 0, y: 0 }}
