@@ -3,8 +3,9 @@ import { StyleSheet, ScrollView, Text, View, Image, ImageBackground, TouchableOp
 import { StatusBar } from 'expo-status-bar';
 import { LinearGradient } from 'expo-linear-gradient';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { db } from '../firebase';
+import { db, auth } from '../firebase';
 import { collection, getDocs } from 'firebase/firestore';
+import { getRecommendations } from '../utils/recommendationEngine';
 
 const Home = ({ navigation }) => {
   const [forYouItems, setForYouItems] = useState([]);
@@ -12,11 +13,8 @@ const Home = ({ navigation }) => {
   useEffect(() => {
     const fetchForYouItems = async () => {
       try {
-        const querySnapshot = await getDocs(collection(db, 'hosts'));
-        const items = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
+        const userId = auth.currentUser?.uid;
+        const items = await getRecommendations(userId);
         setForYouItems(items);
       } catch (error) {
         console.error('Error fetching For You items:', error);
@@ -68,7 +66,7 @@ const Home = ({ navigation }) => {
               </ImageBackground>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => navigation.navigate('CategoryItems', { category: 'Colombo', type: 'location' })}>
-              <ImageBackground source={require('../assets/colombo.png')} style={styles.locationImg}>
+              <ImageBackground source={require('../assets/colombo.jpg')} style={styles.locationImg}>
                 <Text style={styles.overlayText}>Colombo</Text>
               </ImageBackground>
             </TouchableOpacity>

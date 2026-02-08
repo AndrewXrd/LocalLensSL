@@ -5,7 +5,7 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import { app } from '../firebase';
 
-const profile = ({ navigation }) => {
+const Profile = ({ navigation }) => {
 
   const [userData, setUserData] = useState({ username: 'Loading...', email: 'Loading...' });
 
@@ -31,7 +31,6 @@ const profile = ({ navigation }) => {
           Alert.alert('Error', 'Failed to fetch user data: ' + error.message);
         }
       } else {
-        // Redirect to login if not authenticated (optional for MVP)
         navigation.navigate('UserLogin');
       }
     });
@@ -66,7 +65,7 @@ const profile = ({ navigation }) => {
   )
 }
 
-export default profile
+export default Profile
 
 export const styles = StyleSheet.create({
 

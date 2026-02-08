@@ -5,7 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { auth } from '../firebase';
 import { signInWithEmailAndPassword } from "firebase/auth";
 
-//pass - Ghost . Devilll
+//pass - whitedevill616 . Devilll
 
 export default function UserLogin({ navigation }) {
 
